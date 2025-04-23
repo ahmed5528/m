@@ -5,67 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To My Amazing Mom 🌸</title>
     <style>
-        body {
-            background: #fff0f5;
-            font-family: 'Cursive', 'Arial', sans-serif;
-            overflow: hidden;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100dvh;
-        }
+        /* ... (keep previous styles) ... */
 
-        .container {
-            text-align: center;
-            padding: 20px;
-            max-width: 500px;
-        }
-
-        .heart-garden {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .blooming-heart {
-            position: absolute;
-            animation: bloom 2s ease-out forwards;
-            font-size: 30px;
-            opacity: 0;
-        }
-
-        @keyframes bloom {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-
-        .message-box {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(255, 192, 203, 0.3);
-            position: relative;
-            z-index: 2;
-        }
-
-        #mainMessage {
-            font-size: 24px;
-            line-height: 1.6;
-            color: #d6336c;
+        .upload-section {
             margin: 20px 0;
         }
 
-        .photo-frame {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto;
-            background-size: cover;
-            background-position: center;
-            border: 5px solid #ff99cc;
+        #uploadLabel {
+            background: #ff66b3;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: 0.3s;
+        }
+
+        #uploadLabel:hover {
+            transform: scale(1.05);
+        }
+
+        #fileInput {
+            display: none;
         }
     </style>
 </head>
@@ -74,89 +35,43 @@
     
     <div class="container">
         <div class="message-box">
-            <div class="photo-frame" id="momPhoto"></div>
-            <div id="mainMessage">
-                Loading special message for the world's best mom... 💐
+            <!-- Photo Upload Section -->
+            <div class="upload-section">
+                <label id="uploadLabel" for="fileInput">
+                    📸 Add Your Photo
+                </label>
+                <input type="file" id="fileInput" accept="image/*">
             </div>
-            <button onclick="startSurprise()" style="
-                background: #ff66b3;
-                color: white;
-                border: none;
-                padding: 15px 30px;
-                border-radius: 25px;
-                font-size: 18px;
-                cursor: pointer;
-                margin-top: 20px;
-            ">
-                Tap to Begin 🌸
-            </button>
+
+            <div class="photo-frame" id="momPhoto"></div>
+            <!-- ... (rest of previous HTML) ... -->
         </div>
     </div>
 
     <script>
-        let currentHeart = 0;
-        const heartColors = ['#ff66b3', '#ff99cc', '#ff1493', '#ff69b4'];
-
-        function createHeart(x, y) {
-            const heart = document.createElement('div');
-            heart.className = 'blooming-heart';
-            heart.innerHTML = '❤️';
-            heart.style.left = x + 'px';
-            heart.style.top = y + 'px';
-            heart.style.color = heartColors[currentHeart % heartColors.length];
-            document.getElementById('garden').appendChild(heart);
-            currentHeart++;
-            
-            setTimeout(() => heart.remove(), 2000);
-        }
-
-        function startSurprise() {
-            document.querySelector('button').style.display = 'none';
-            
-            // Add your mom's photo (replace URL)
-            document.getElementById('momPhoto').style.backgroundImage = 
-                'url(https://www.google.com/url?sa=i&url=https%3A%2F%2Fnjmsyria.com%2F2025%2F01%2F18%2F%D8%AD%D8%A7%D9%84%D8%A7%D8%AA-%D9%81%D8%AF%D9%8A%D9%88-%D9%84%D8%A7%D8%B3%D9%85-%D9%87%D8%A7%D9%84%D8%A9-%D8%B5%D9%88%D8%B1-%D8%A8%D8%A7%D8%B3%D9%85-%D9%87%D8%A7%D9%84%D8%A9%2F&psig=AOvVaw2InCa4zvddMzTurfgCDoRB&ust=1745515344993000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCJC2_MLV7owDFQAAAAAdAAAAABAE)';
-
-            // Heart animation loop
-            const heartInterval = setInterval(() => {
-                createHeart(
-                    Math.random() * window.innerWidth,
-                    Math.random() * window.innerHeight
-                );
-            }, 300);
-
-            // Typewriter message
-            const messages = [
-                "To My Super Mom...",
-                "Thank you for...",
-                "Your endless love 💕",
-                "Your warm hugs 🤗",
-                "Your delicious meals 🍲",
-                "Your wise advice 💡",
-                "And for simply being YOU!",
-                "I love you to the moon and back! 🌙", 
-                "- Your Loving Child"
-            ];
-
-            let index = 0;
-            function showNextMessage() {
-                if(index < messages.length) {
-                    document.getElementById('mainMessage').innerHTML = messages[index];
-                    index++;
-                    setTimeout(showNextMessage, 2500);
-                }
+        // Add this to handle photo upload
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('momPhoto').style.backgroundImage = 
+                        `url(${e.target.result})`;
+                    document.getElementById('uploadLabel').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
             }
-            showNextMessage();
+        });
 
-            // Stop hearts after 30 seconds
-            setTimeout(() => {
-                clearInterval(heartInterval);
-                document.getElementById('mainMessage').innerHTML = 
-                    "You're my forever hero! 💖<br>Tap screen for more hearts!";
-                document.body.addEventListener('click', (e) => {
-                    createHeart(e.clientX, e.clientY);
-                });
-            }, 30000);
+        // Modified startSurprise function
+        function startSurprise() {
+            // Check if photo was uploaded
+            if(!document.getElementById('momPhoto').style.backgroundImage.includes('url')) {
+                alert("Please add a photo first! 📸");
+                return;
+            }
+
+            // ... (rest of previous JavaScript) ...
         }
     </script>
 </body>
