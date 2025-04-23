@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To My Amazing Mom! 🌸</title>
+    <style>
+        body {
+            background: #fff0f5;
+            font-family: 'Comic Sans MS', cursive;
+            overflow-x: hidden;
+        }
+        .flower {
+            position: absolute;
+            animation: float 8s infinite linear;
+            font-size: 30px;
+            opacity: 0;
+        }
+        @keyframes float {
+            0% { transform: translateY(100dvh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100dvh) rotate(360deg); opacity: 0; }
+        }
+        #slideshow img {
+            width: 80%;
+            border: 5px solid #ff69b4;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="flowers"></div>
+    
+    <div style="text-align: center; padding: 20px;">
+        <h1 style="color: #ff69b4;">Happy [Occasion] Mom! 💐</h1>
+        
+        <!-- Slideshow -->
+        <div id="slideshow">
+            <img src="family-photo1.jpg" class="active">
+            <img src="family-photo2.jpg">
+            <img src="family-photo3.jpg">
+        </div>
+
+        <!-- Voice Message -->
+        <button id="recordBtn" style="background: #ff69b4; color: white; padding: 15px; border-radius: 20px; border: none; margin: 15px;">
+            Tap to Hear My Message 🎤
+        </button>
+
+        <!-- Hidden Message -->
+        <div id="message" style="display: none; font-size: 1.2em; color: #8b0000;">
+            Mom, you're my...<br>
+            🌟 Superhero<br>
+            🍪 Best Chef<br>
+            💖 Forever Friend
+        </div>
+    </div>
+
+    <script>
+        // Add floating flowers
+        function createFlowers() {
+            const container = document.querySelector('.flowers');
+            const emojis = ['🌸', '🌺', '🌷', '💮'];
+            for(let i=0; i<20; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.innerHTML = emojis[Math.floor(Math.random()*emojis.length)];
+                flower.style.left = Math.random() * 100 + 'vw';
+                flower.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(flower);
+            }
+        }
+
+        // Slideshow
+        let slideIndex = 0;
+        setInterval(() => {
+            const slides = document.querySelectorAll('#slideshow img');
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+        }, 3000);
+
+        // Voice Recording
+        let recorder;
+        document.getElementById('recordBtn').addEventListener('click', async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recorder = new MediaRecorder(stream);
+            recorder.start();
+            
+            setTimeout(async () => {
+                recorder.stop();
+                document.getElementById('message').style.display = 'block';
+            }, 3000); // 3-second recording
+        });
+
+        // Initialize
+        createFlowers();
+    </script>
+</body>
+</html>
