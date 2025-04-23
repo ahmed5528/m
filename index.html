@@ -5,28 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To My Amazing Mom 🌸</title>
     <style>
-        /* ... (keep previous styles) ... */
-
-        .upload-section {
-            margin: 20px 0;
+        body {
+            background: #fff0f5;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100dvh;
+            touch-action: manipulation;
         }
 
-        #uploadLabel {
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .heart-garden {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .blooming-heart {
+            position: absolute;
+            animation: bloom 2s ease-out forwards;
+            font-size: 30px;
+            opacity: 0;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .message-box {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 192, 203, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        #mainMessage {
+            font-size: 24px;
+            line-height: 1.6;
+            color: #d6336c;
+            margin: 20px 0;
+            min-height: 120px;
+        }
+
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto;
+            border: 5px solid #ff99cc;
+            overflow: hidden;
+        }
+
+        #momPhoto {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        button {
             background: #ff66b3;
             color: white;
-            padding: 12px 20px;
-            border-radius: 20px;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 18px;
             cursor: pointer;
-            display: inline-block;
-            transition: 0.3s;
+            margin-top: 20px;
+            transition: transform 0.3s;
         }
 
-        #uploadLabel:hover {
-            transform: scale(1.05);
+        button:active {
+            transform: scale(0.95);
         }
 
-        #fileInput {
-            display: none;
+        @media (max-width: 480px) {
+            #mainMessage { font-size: 20px; }
+            .photo-frame { width: 150px; height: 150px; }
         }
     </style>
 </head>
@@ -35,43 +103,77 @@
     
     <div class="container">
         <div class="message-box">
-            <!-- Photo Upload Section -->
-            <div class="upload-section">
-                <label id="uploadLabel" for="fileInput">
-                    📸 Add Your Photo
-                </label>
-                <input type="file" id="fileInput" accept="image/*">
+            <div class="photo-frame">
+                <img id="momPhoto" src="mom.jpg" alt="World's Best Mom">
             </div>
-
-            <div class="photo-frame" id="momPhoto"></div>
-            <!-- ... (rest of previous HTML) ... -->
+            <div id="mainMessage">
+                Ready for your special surprise, Mom? 💖
+            </div>
+            <button onclick="startSurprise()">
+                Tap Here, Mom! 🌸
+            </button>
         </div>
     </div>
 
     <script>
-        // Add this to handle photo upload
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('momPhoto').style.backgroundImage = 
-                        `url(${e.target.result})`;
-                    document.getElementById('uploadLabel').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        let currentHeart = 0;
+        const heartColors = ['#ff66b3', '#ff99cc', '#ff1493', '#ff69b4'];
+        const messages = [
+            "To My Super Mom...",
+            "Thank you for everything you do!",
+            "Your love is my compass 💕",
+            "Your hugs heal all worries 🤗",
+            "Your strength inspires me 💪",
+            "Your smile lights up our home 🌟",
+            "You're my forever hero!",
+            "I love you more than words can say!",
+            "- Your Grateful Child"
+        ];
 
-        // Modified startSurprise function
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'blooming-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            heart.style.color = heartColors[currentHeart % heartColors.length];
+            document.getElementById('garden').appendChild(heart);
+            currentHeart++;
+            setTimeout(() => heart.remove(), 2000);
+        }
+
         function startSurprise() {
-            // Check if photo was uploaded
-            if(!document.getElementById('momPhoto').style.backgroundImage.includes('url')) {
-                alert("Please add a photo first! 📸");
-                return;
-            }
+            document.querySelector('button').style.display = 'none';
+            let index = 0;
 
-            // ... (rest of previous JavaScript) ...
+            // Heart animation
+            const heartInterval = setInterval(() => {
+                createHeart(
+                    Math.random() * window.innerWidth,
+                    Math.random() * window.innerHeight
+                );
+            }, 300);
+
+            // Message animation
+            function showNextMessage() {
+                if(index < messages.length) {
+                    document.getElementById('mainMessage').innerHTML = messages[index];
+                    index++;
+                    setTimeout(showNextMessage, 2500);
+                } else {
+                    document.getElementById('mainMessage').innerHTML += 
+                        '<br><br>💝 Tap anywhere for more love! 💝';
+                    document.body.addEventListener('click', (e) => {
+                        createHeart(e.clientX, e.clientY);
+                    });
+                }
+            }
+            showNextMessage();
+
+            // Stop automatic hearts after messages
+            setTimeout(() => {
+                clearInterval(heartInterval);
+            }, messages.length * 2500 + 1000);
         }
     </script>
 </body>
